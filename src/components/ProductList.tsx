@@ -13,7 +13,7 @@ import {
   Grid,
   Container,
   IconButton,
-  Box,
+  TextField, // Filter-Eingabe
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -27,6 +27,7 @@ type Product = {
 
 const ProductList = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>(""); // Suchbegriff-Status
   const addToCart = useCartStore((state) => state.addToCart);
   const toggleFavorite = useCartStore((state) => state.toggleFavorite);
   const favorites = useCartStore((state) => state.favorites);
@@ -39,13 +40,28 @@ const ProductList = () => {
     getProducts();
   }, []);
 
+  // **Filtert die Produkte basierend auf dem Suchbegriff**
+  const filteredProducts = products.filter((product) =>
+    product.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Container>
       <Typography variant="h4" align="center" gutterBottom>
         Produkte
       </Typography>
+
+      {/* Suchfeld für Filter */}
+      <TextField
+        label="Produkte suchen..."
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
       <Grid container spacing={3}>
-        {products.map((product) => {
+        {filteredProducts.map((product) => {
           const isFavorite = favorites.some((fav) => fav.id === product.id);
           return (
             <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
