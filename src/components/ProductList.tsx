@@ -18,6 +18,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -42,12 +44,15 @@ const ProductList = () => {
     thumbnail: "",
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({
+    open: false,
+    message: "",
+  });
 
   const addToCart = useCartStore((state) => state.addToCart);
   const toggleFavorite = useCartStore((state) => state.toggleFavorite);
   const favorites = useCartStore((state) => state.favorites);
 
-  // **Lade Produkte aus localStorage oder API**
   useEffect(() => {
     const loadProducts = async () => {
       const storedProducts = JSON.parse(
@@ -64,17 +69,14 @@ const ProductList = () => {
     loadProducts();
   }, []);
 
-  // **Speichert Produkte in localStorage**
   const updateLocalStorage = (updatedProducts: Product[]) => {
     localStorage.setItem("productCatalog", JSON.stringify(updatedProducts));
   };
 
-  // **Filtert die Produkte basierend auf dem Suchbegriff**
   const filteredProducts = products.filter((product) =>
     product.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // **Bild hochladen**
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -90,7 +92,6 @@ const ProductList = () => {
     }
   };
 
-  // **Produkt hinzufügen**
   const handleAddProduct = () => {
     if (!newProduct.title || newProduct.price <= 0 || !newProduct.thumbnail) {
       alert("Bitte alle Felder ausfüllen!");
@@ -107,16 +108,19 @@ const ProductList = () => {
     setProducts(updatedProducts);
     updateLocalStorage(updatedProducts);
 
+    setSnackbar({ open: true, message: "Produkt erfolgreich hinzugefügt!" });
+
     setOpen(false);
     setNewProduct({ title: "", price: 0, thumbnail: "" });
     setImagePreview(null);
   };
 
-  // **Produkt löschen**
   const handleDeleteProduct = (id: number) => {
     const updatedProducts = products.filter((product) => product.id !== id);
     setProducts(updatedProducts);
     updateLocalStorage(updatedProducts);
+
+    setSnackbar({ open: true, message: "Produkt erfolgreich gelöscht!" });
   };
 
   return (
@@ -125,7 +129,6 @@ const ProductList = () => {
         Produkte
       </Typography>
 
-      {/* Suchfeld für Filter */}
       <TextField
         label="Produkte suchen..."
         variant="outlined"
@@ -134,7 +137,6 @@ const ProductList = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      {/* Button zum Produkt-Hinzufügen */}
       <Button
         variant="contained"
         color="primary"
@@ -146,7 +148,6 @@ const ProductList = () => {
         Neues Produkt hinzufügen
       </Button>
 
-      {/* Produkt-Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Neues Produkt hinzufügen</DialogTitle>
         <DialogContent>
@@ -174,7 +175,6 @@ const ProductList = () => {
             }
           />
 
-          {/* Datei-Upload für das Bild */}
           <input
             type="file"
             accept="image/*"
@@ -182,7 +182,6 @@ const ProductList = () => {
             style={{ marginTop: "10px" }}
           />
 
-          {/* Bild-Vorschau anzeigen */}
           {imagePreview && (
             <img
               src={imagePreview}
@@ -207,7 +206,6 @@ const ProductList = () => {
           return (
             <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
               <Card sx={{ position: "relative" }}>
-                {/* Favoriten-Stern rechts oben */}
                 <IconButton
                   onClick={() => toggleFavorite(product)}
                   sx={{
@@ -242,7 +240,6 @@ const ProductList = () => {
                     Zur Einkaufsliste
                   </Button>
 
-                  {/* Löschen-Button nur für eigene Produkte anzeigen */}
                   {product.isCustom && (
                     <IconButton
                       onClick={() => handleDeleteProduct(product.id)}
@@ -257,6 +254,20 @@ const ProductList = () => {
           );
         })}
       </Grid>
+
+      {/* Snackbar für Erfolgsmeldungen */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ open: false, message: "" })}
+      >
+        <Alert
+          severity="success"
+          onClose={() => setSnackbar({ open: false, message: "" })}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
