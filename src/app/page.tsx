@@ -1,5 +1,5 @@
 import ProductList from "@/components/ProductList";
-import { Container, Typography, Button } from "@mui/material";
+import { Container, Typography, Button, Stack } from "@mui/material";
 import Link from "next/link";
 
 export default function Home() {
@@ -9,11 +9,18 @@ export default function Home() {
         Shopping List
       </Typography>
       <ProductList />
-      <Link href="/cart" passHref>
-        <Button variant="contained" color="secondary" fullWidth sx={{ mt: 4 }}>
-          Zur Einkaufsliste
-        </Button>
-      </Link>
+      <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 4 }}>
+        <Link href="/cart" passHref>
+          <Button variant="contained" color="secondary">
+            Zur Einkaufsliste
+          </Button>
+        </Link>
+        <Link href="/favorites" passHref>
+          <Button variant="outlined" color="primary">
+            Favoriten anzeigen
+          </Button>
+        </Link>
+      </Stack>
     </Container>
   );
 }
