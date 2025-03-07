@@ -25,7 +25,7 @@ type CartState = {
 export const useCartStore = create<CartState>((set) => ({
   cart: [],
   favorites: [],
-  productCatalog: [], // Wird erst im Client gesetzt
+  productCatalog: [],
 
   addToCart: (product) =>
     set((state) => ({

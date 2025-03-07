@@ -24,7 +24,7 @@ import {
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import AddIcon from "@mui/icons-material/Add";
+//import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 type Product = {
@@ -33,6 +33,7 @@ type Product = {
   price: number;
   thumbnail: string;
   isCustom?: boolean;
+  description: string;
 };
 
 const ProductList = () => {
@@ -43,6 +44,7 @@ const ProductList = () => {
     title: "",
     price: 0,
     thumbnail: "",
+    description: "",
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -113,7 +115,7 @@ const ProductList = () => {
     setSnackbar({ open: true, message: "Produkt erfolgreich hinzugefügt!" });
 
     setOpen(false);
-    setNewProduct({ title: "", price: 0, thumbnail: "" });
+    setNewProduct({ title: "", price: 0, thumbnail: "", description: "" });
     setImagePreview(null);
   };
 
@@ -131,7 +133,6 @@ const ProductList = () => {
         Produkte
       </Typography>
 
-      {/* Neue Suchleiste + Button mit modernem Design */}
       <Box
         sx={{
           display: "flex",
@@ -197,9 +198,9 @@ const ProductList = () => {
             label="Preis ($)"
             type="number"
             fullWidth
-            value={newProduct.price === 0 ? "" : newProduct.price} // Verhindert NaN
+            value={newProduct.price === 0 ? "" : newProduct.price}
             onChange={(e) => {
-              const value = e.target.value.trim(); // Entfernt unnötige Leerzeichen
+              const value = e.target.value.trim();
               const parsedValue = parseFloat(value);
 
               setNewProduct({
@@ -207,6 +208,17 @@ const ProductList = () => {
                 price: value === "" || isNaN(parsedValue) ? 0 : parsedValue,
               });
             }}
+          />
+          <TextField
+            margin="dense"
+            label="Description"
+            fullWidth
+            multiline
+            rows={3}
+            value={newProduct.description}
+            onChange={(e) =>
+              setNewProduct({ ...newProduct, description: e.target.value })
+            }
           />
 
           <input
