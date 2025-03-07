@@ -1,3 +1,4 @@
+/* Author: Ercan Celik */
 import axios from "axios";
 
 export const fetchProducts = async () => {

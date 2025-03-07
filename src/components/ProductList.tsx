@@ -1,3 +1,4 @@
+/* Author: Ercan Celik */
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -24,7 +25,6 @@ import {
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-//import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 type Product = {

@@ -1,3 +1,4 @@
+/* Author: Ercan Celik */
 "use client";
 
 import { useCartStore } from "@/store/cartStore";
@@ -99,7 +100,7 @@ const CartPage = () => {
         Zurück zu den Produkten
       </Button>
 
-      {/* Snackbar für Erfolgsmeldungen */}
+      {/* Erfolgsmeldungen */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

@@ -1,3 +1,4 @@
+/* Author: Ercan Celik */
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import ProductList from "@/components/ProductList";

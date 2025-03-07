@@ -1,3 +1,4 @@
+/* Author: Ercan Celik */
 "use client";
 
 import { useCartStore } from "@/store/cartStore";

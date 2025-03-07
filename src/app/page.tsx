@@ -1,3 +1,4 @@
+/* Author: Ercan Celik */
 import ProductList from "@/components/ProductList";
 import { Container, Typography, Button, Stack } from "@mui/material";
 import Link from "next/link";

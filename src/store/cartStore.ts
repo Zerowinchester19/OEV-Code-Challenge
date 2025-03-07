@@ -1,3 +1,4 @@
+/* Author: Ercan Celik */
 import { create } from "zustand";
 import { useEffect } from "react";
 
