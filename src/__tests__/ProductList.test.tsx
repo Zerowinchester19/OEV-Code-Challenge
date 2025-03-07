@@ -1,4 +1,4 @@
-import React from "react"; // Wichtig!
+import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import ProductList from "@/components/ProductList";
 import { waitFor } from "@testing-library/react";
