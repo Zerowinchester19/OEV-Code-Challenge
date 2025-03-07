@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import { useEffect, useState } from "react";
 import { fetchProducts } from "@/lib/products";
 import { useCartStore } from "@/store/cartStore";
@@ -226,6 +226,7 @@ const ProductList = () => {
             accept="image/*"
             onChange={handleImageUpload}
             style={{ marginTop: "10px" }}
+            data-testid="file-upload"
           />
 
           {imagePreview && (
