@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useEffect } from "react";
 
 type Product = {
   id: number;
@@ -18,13 +19,13 @@ type CartState = {
   toggleFavorite: (product: Product) => void;
   addProduct: (product: Product) => void;
   removeProduct: (id: number) => void;
-  setInitialProducts: (products: Product[]) => void;
+  setProductCatalog: (products: Product[]) => void;
 };
 
 export const useCartStore = create<CartState>((set) => ({
   cart: [],
   favorites: [],
-  productCatalog: JSON.parse(localStorage.getItem("productCatalog") || "[]"), // Produkte aus `localStorage` laden
+  productCatalog: [], // Wird erst im Client gesetzt
 
   addToCart: (product) =>
     set((state) => ({
@@ -36,7 +37,10 @@ export const useCartStore = create<CartState>((set) => ({
       cart: state.cart.filter((product) => product.id !== id),
     })),
 
-  clearCart: () => set({ cart: [] }),
+  clearCart: () =>
+    set(() => ({
+      cart: [],
+    })),
 
   toggleFavorite: (product) =>
     set((state) => {
@@ -48,22 +52,17 @@ export const useCartStore = create<CartState>((set) => ({
       };
     }),
 
-  setInitialProducts: (apiProducts) =>
-    set(() => {
-      const storedProducts = JSON.parse(
-        localStorage.getItem("productCatalog") || "[]"
-      );
-
-      return {
-        productCatalog:
-          storedProducts.length > 0 ? storedProducts : apiProducts,
-      };
-    }),
+  setProductCatalog: (products) =>
+    set(() => ({
+      productCatalog: products,
+    })),
 
   addProduct: (product) =>
     set((state) => {
       const updatedProducts = [...state.productCatalog, product];
-      localStorage.setItem("productCatalog", JSON.stringify(updatedProducts)); // Speichern in localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("productCatalog", JSON.stringify(updatedProducts));
+      }
       return { productCatalog: updatedProducts };
     }),
 
@@ -72,7 +71,23 @@ export const useCartStore = create<CartState>((set) => ({
       const updatedProducts = state.productCatalog.filter(
         (product) => product.id !== id
       );
-      localStorage.setItem("productCatalog", JSON.stringify(updatedProducts)); // Aktualisieren in localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("productCatalog", JSON.stringify(updatedProducts));
+      }
       return { productCatalog: updatedProducts };
     }),
 }));
+
+// **Client-Side Loading für `productCatalog`**
+export const useLoadProducts = () => {
+  const setProductCatalog = useCartStore((state) => state.setProductCatalog);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedProducts = JSON.parse(
+        localStorage.getItem("productCatalog") || "[]"
+      );
+      setProductCatalog(storedProducts);
+    }
+  }, [setProductCatalog]);
+};

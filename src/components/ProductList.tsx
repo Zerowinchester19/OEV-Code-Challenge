@@ -20,6 +20,7 @@ import {
   DialogTitle,
   Snackbar,
   Alert,
+  Box,
 } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -44,6 +45,7 @@ const ProductList = () => {
     thumbnail: "",
   });
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({
     open: false,
     message: "",
@@ -129,24 +131,53 @@ const ProductList = () => {
         Produkte
       </Typography>
 
-      <TextField
-        label="Produkte suchen..."
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-
-      <Button
-        variant="contained"
-        color="primary"
-        startIcon={<AddIcon />}
-        fullWidth
-        onClick={() => setOpen(true)}
-        sx={{ marginBottom: 2 }}
+      {/* Neue Suchleiste + Button mit modernem Design */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          backgroundColor: "#F7F7FC",
+          padding: "8px",
+          borderRadius: "20px",
+          marginBottom: "16px",
+        }}
       >
-        Neues Produkt hinzufügen
-      </Button>
+        <TextField
+          placeholder="Search..."
+          variant="outlined"
+          fullWidth
+          sx={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "12px",
+            },
+            "& .MuiInputBase-input": {
+              padding: "10px 14px",
+            },
+          }}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
+        <Button
+          variant="contained"
+          onClick={() => setOpen(true)}
+          sx={{
+            backgroundColor: "#D8D8E5",
+            color: "#3D3D4E",
+            fontWeight: "bold",
+            borderRadius: "20px",
+            padding: "10px 20px",
+            textTransform: "none",
+            "&:hover": {
+              backgroundColor: "#C5C5D3",
+            },
+          }}
+        >
+          Add new product
+        </Button>
+      </Box>
 
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Neues Produkt hinzufügen</DialogTitle>
@@ -166,13 +197,16 @@ const ProductList = () => {
             label="Preis ($)"
             type="number"
             fullWidth
-            value={newProduct.price}
-            onChange={(e) =>
+            value={newProduct.price === 0 ? "" : newProduct.price} // Verhindert NaN
+            onChange={(e) => {
+              const value = e.target.value.trim(); // Entfernt unnötige Leerzeichen
+              const parsedValue = parseFloat(value);
+
               setNewProduct({
                 ...newProduct,
-                price: parseFloat(e.target.value),
-              })
-            }
+                price: value === "" || isNaN(parsedValue) ? 0 : parsedValue,
+              });
+            }}
           />
 
           <input
@@ -237,9 +271,8 @@ const ProductList = () => {
                     color="primary"
                     onClick={() => addToCart(product)}
                   >
-                    Zur Einkaufsliste
+                    Add to cart
                   </Button>
-
                   {product.isCustom && (
                     <IconButton
                       onClick={() => handleDeleteProduct(product.id)}
@@ -255,18 +288,12 @@ const ProductList = () => {
         })}
       </Grid>
 
-      {/* Snackbar für Erfolgsmeldungen */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
         onClose={() => setSnackbar({ open: false, message: "" })}
       >
-        <Alert
-          severity="success"
-          onClose={() => setSnackbar({ open: false, message: "" })}
-        >
-          {snackbar.message}
-        </Alert>
+        <Alert severity="success">{snackbar.message}</Alert>
       </Snackbar>
     </Container>
   );

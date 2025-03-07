@@ -12,7 +12,7 @@ export default function Home() {
       <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 4 }}>
         <Link href="/cart" passHref>
           <Button variant="contained" color="secondary">
-            Zur Einkaufsliste
+            Zum Warenkorb
           </Button>
         </Link>
         <Link href="/favorites" passHref>
